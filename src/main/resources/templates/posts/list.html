@@ -18,7 +18,18 @@
     <a class="btn btn-primary" th:href="@{/posts/new}">새 글 작성</a>
 </div>
 
-<!-- 리스트 그룹 -->
+<!-- 검색 폼 -->
+<form class="d-flex mb-3" th:action="@{/posts}" method="get">
+    <input
+            class="form-control me-2"
+            type="search"
+            name="q"
+            th:value="${q}"
+            placeholder="제목 검색…" />
+    <button class="btn btn-outline-success" type="submit">검색</button>
+</form>
+
+<!-- 게시글 리스트 -->
 <ul class="list-group mb-4">
     <li
             class="list-group-item d-flex justify-content-between align-items-center"
@@ -37,30 +48,29 @@
         </div>
     </li>
 </ul>
-///
-<!-- 페이징 -->
+
+<!-- 페이징 네비게이션 -->
 <nav aria-label="페이지 네비게이션">
     <ul class="pagination">
-        <li class="page-item" th:classappend="${!postPage.hasPrevious()} ? 'disabled'">
-            <a
-                    class="page-link"
-                    th:href="@{/posts(page=${postPage.number-1},size=${postPage.size})}"
-                    aria-label="Previous">«</a>
+        <!-- 이전 버튼 -->
+        <li class="page-item" th:classappend="${postPage.first} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/posts(q=${q},page=${postPage.number-1},size=${postPage.size})}"
+               aria-label="이전">&laquo;</a>
         </li>
-        <li
-                class="page-item"
-                th:each="i : ${#numbers.sequence(0, postPage.totalPages-1)}"
-                th:classappend="${i == postPage.number} ? 'active'">
-            <a
-                    class="page-link"
-                    th:href="@{/posts(page=${i},size=${postPage.size})}"
-                    th:text="${i+1}">1</a>
+        <!-- 페이지 번호 -->
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, postPage.totalPages-1)}"
+            th:classappend="${i == postPage.number} ? 'active'">
+            <a class="page-link"
+               th:href="@{/posts(q=${q},page=${i},size=${postPage.size})}"
+               th:text="${i+1}">1</a>
         </li>
-        <li class="page-item" th:classappend="${!postPage.hasNext()} ? 'disabled'">
-            <a
-                    class="page-link"
-                    th:href="@{/posts(page=${postPage.number+1},size=${postPage.size})}"
-                    aria-label="Next">»</a>
+        <!-- 다음 버튼 -->
+        <li class="page-item" th:classappend="${postPage.last} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/posts(q=${q},page=${postPage.number+1},size=${postPage.size})}"
+               aria-label="다음">&raquo;</a>
         </li>
     </ul>
 </nav>
